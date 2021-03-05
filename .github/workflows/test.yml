@@ -24,7 +24,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, ubuntu-16.04, windows-latest, macOS-latest]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
@@ -45,8 +45,10 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
     - run: npm ci
     - name: Prettier Format Check
+      if: ${{ runner.os != 'Windows' }}
       run: npm run format-check
     - name: ESLint Check
+      if: ${{ runner.os != 'Windows' }}
       run: npm run lint
     - name: Build & Test
       run: npm run test
@@ -64,7 +66,7 @@ jobs:
   test-save:
     strategy:
       matrix:
-        os: [ubuntu-latest, ubuntu-16.04, windows-latest, macOS-latest]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
@@ -88,7 +90,7 @@ jobs:
     needs: test-save
     strategy:
       matrix:
-        os: [ubuntu-latest, ubuntu-16.04, windows-latest, macOS-latest]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
