@@ -3,7 +3,6 @@ import { Events, Outputs, RefKey, State } from "../src/constants";
 import * as testUtils from "./test-helpers";
 import * as actionUtils from "./utils";
 
-
 jest.mock("@actions/core");
 
 beforeAll(() => {

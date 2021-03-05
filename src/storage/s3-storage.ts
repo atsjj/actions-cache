@@ -68,15 +68,21 @@ function getInput(env: string, ref: string): string {
   try {
     return core.getInput(ref, { required: true });
   } catch (_) {
-    return process.env[env] || '';
+    return process.env[env] || "";
   }
 }
 
 export default class S3Storage implements Storage {
   backend = new S3({
     credentials: {
-      accessKeyId: getInput(S3StorageRefs.AccessKeyEnv, S3StorageRefs.AccessKeyRef),
-      secretAccessKey: getInput(S3StorageRefs.SecretKeyEnv, S3StorageRefs.SecretKeyRef),
+      accessKeyId: getInput(
+        S3StorageRefs.AccessKeyEnv,
+        S3StorageRefs.AccessKeyRef
+      ),
+      secretAccessKey: getInput(
+        S3StorageRefs.SecretKeyEnv,
+        S3StorageRefs.SecretKeyRef
+      ),
     },
     region: getInput(S3StorageRefs.RegionEnv, S3StorageRefs.RegionRef),
   });
