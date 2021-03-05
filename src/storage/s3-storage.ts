@@ -10,21 +10,20 @@ export interface Storage {
   download(key: string): Promise<Uint8Array>;
 }
 
-function getObject(s3: S3, bucket: string, key: string): Promise<Uint8Array> {
+function getObject(
+  s3: S3,
+  bucket: string,
+  key: string
+): Promise<Uint8Array> {
   return new Promise(function (resolve, reject) {
     s3.getObject({ Bucket: bucket, Key: key }, function (error, data) {
       if (error) {
         reject(error);
       } else {
-        if (data === undefined) {
-          resolve(new Uint8Array());
-        } else if (
-          Buffer.isBuffer(data.Body) ||
-          data.Body instanceof Uint8Array
-        ) {
-          resolve(data.Body);
+        if (data.Body === undefined) {
+          reject('S3 returned `undefined` as an object');
         } else {
-          resolve(new Uint8Array());
+          resolve(data.Body as unknown as Uint8Array);
         }
       }
     });
