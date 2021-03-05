@@ -8,6 +8,8 @@ export enum CompressionMethod {
   Sz = "Sz",
 }
 
+export const ContentType = "application/x-7z-compressed";
+
 export enum Events {
   Key = "GITHUB_EVENT_NAME",
   Push = "push",

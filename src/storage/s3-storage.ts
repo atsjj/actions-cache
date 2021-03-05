@@ -2,7 +2,7 @@ import * as core from "@actions/core";
 import { S3 } from "aws-sdk";
 import type { PathLike } from "fs";
 import { readFileSync } from "fs";
-import { S3StorageRefs } from "../constants";
+import { ContentType, S3StorageRefs } from "../constants";
 
 export interface Storage {
   upload(key: string, path: PathLike, checksum: string): Promise<void>;
@@ -47,7 +47,7 @@ function putObject(
 ): Promise<void> {
   return new Promise(function (resolve, reject) {
     s3.putObject(
-      { Body: body, Bucket: bucket, Key: key, ContentMD5: checksum },
+      { Body: body, Bucket: bucket, Key: key, ContentMD5: checksum, ContentType },
       function (error) {
         if (error) {
           reject(error);
