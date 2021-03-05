@@ -40,7 +40,7 @@ export async function extractTar(
 
   await io.mkdirP(workingDirectory);
 
-  await cmd("x", archivePath.replace(PathRegexp, "/"));
+  await cmd("x", "-spf", archivePath.replace(PathRegexp, "/"));
 }
 
 export async function listTar(
