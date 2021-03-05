@@ -1,5 +1,5 @@
 import * as core from "@actions/core";
-import { writeFile } from "fs/promises";
+import { writeFileSync } from "fs";
 import * as path from "path";
 import { createTar, extractTar, listTar } from "./archive";
 import S3Storage from "./storage/s3-storage";
@@ -83,7 +83,7 @@ export async function restoreCache(
 
   try {
     // Download the cache from the cache entry
-    writeFile(archivePath, await storage.download(primaryKey));
+    writeFileSync(archivePath, await storage.download(primaryKey));
 
     if (core.isDebug()) {
       await listTar(archivePath, compressionMethod);
@@ -103,7 +103,7 @@ export async function restoreCache(
   } finally {
     // Try to delete the archive to save space
     try {
-      await utils.unlinkFile(archivePath);
+      utils.unlinkFile(archivePath);
     } catch (error) {
       core.debug(`Failed to delete archive: ${error}`);
     }

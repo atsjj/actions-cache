@@ -3,7 +3,7 @@ import * as glob from "@actions/glob";
 import * as io from "@actions/io";
 import { createHash } from "crypto";
 import type { PathLike } from "fs";
-import { readFile, stat, unlink } from "fs/promises";
+import { readFileSync, statSync, unlinkSync } from "fs";
 import { join, relative } from "path";
 import { v4 as uuidV4 } from "uuid";
 import {
@@ -32,7 +32,7 @@ export function getWorkingDirectory(): string {
 export async function getChecksum(filePath: PathLike): Promise<string> {
   const hash = createHash("md5");
 
-  hash.update(await readFile(filePath));
+  hash.update(readFileSync(filePath));
 
   return hash.digest("base64");
 }
@@ -40,7 +40,7 @@ export async function getChecksum(filePath: PathLike): Promise<string> {
 export async function getArchiveFileSizeIsBytes(
   filePath: PathLike
 ): Promise<number> {
-  return (await stat(filePath)).size;
+  return statSync(filePath).size;
 }
 
 export async function resolvePaths(patterns: string[]): Promise<string[]> {
@@ -91,8 +91,8 @@ export async function createTempDirectory(): Promise<string> {
   return dest;
 }
 
-export async function unlinkFile(filePath: PathLike): Promise<void> {
-  await unlink(filePath);
+export function unlinkFile(filePath: PathLike): void {
+  unlinkSync(filePath);
 }
 
 export function isExactKeyMatch(key: string, cacheKey?: string): boolean {

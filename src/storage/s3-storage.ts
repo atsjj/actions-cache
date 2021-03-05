@@ -1,8 +1,8 @@
+import * as core from "@actions/core";
 import { S3 } from "aws-sdk";
 import type { PathLike } from "fs";
-import { readFile } from "fs/promises";
+import { readFileSync } from "fs";
 import { S3StorageRefs } from "../constants";
-import * as core from "@actions/core";
 
 export interface Storage {
   upload(key: string, path: PathLike, checksum: string): Promise<void>;
@@ -97,7 +97,7 @@ export default class S3Storage implements Storage {
       this.bucket,
       key,
       checksum,
-      await readFile(path)
+      readFileSync(path)
     );
   }
 
