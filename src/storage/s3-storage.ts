@@ -96,17 +96,17 @@ export default class S3Storage implements Storage {
     return await putObject(
       this.backend,
       this.bucket,
-      key,
+      `${key}.7z`,
       checksum,
       readFileSync(path)
     );
   }
 
   async exists(key: string): Promise<boolean> {
-    return await headObject(this.backend, this.bucket, key);
+    return await headObject(this.backend, this.bucket, `${key}.7z`);
   }
 
   async download(key: string): Promise<Uint8Array> {
-    return await getObject(this.backend, this.bucket, key);
+    return await getObject(this.backend, this.bucket, `${key}.7z`);
   }
 }
