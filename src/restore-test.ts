@@ -83,48 +83,6 @@ test("restore with no key", async () => {
   );
 });
 
-test("restore with large key should fail", async () => {
-  const path = "node_modules";
-  const key = "foo".repeat(512); // Over the 512 character limit
-
-  testUtils.setInputs({
-    path: path,
-    key,
-  });
-
-  const failedMock = jest.spyOn(core, "setFailed");
-  const restoreCacheMock = jest.spyOn(cache, "restoreCache");
-
-  await run();
-
-  expect(restoreCacheMock).toHaveBeenCalledTimes(1);
-  expect(restoreCacheMock).toHaveBeenCalledWith([path], key, []);
-  expect(failedMock).toHaveBeenCalledWith(
-    `Key Validation Error: ${key} cannot be larger than 512 characters.`
-  );
-});
-
-test("restore with invalid key should fail", async () => {
-  const path = "node_modules";
-  const key = "comma,comma";
-
-  testUtils.setInputs({
-    path: path,
-    key,
-  });
-
-  const failedMock = jest.spyOn(core, "setFailed");
-  const restoreCacheMock = jest.spyOn(cache, "restoreCache");
-
-  await run();
-
-  expect(restoreCacheMock).toHaveBeenCalledTimes(1);
-  expect(restoreCacheMock).toHaveBeenCalledWith([path], key, []);
-  expect(failedMock).toHaveBeenCalledWith(
-    `Key Validation Error: ${key} cannot contain commas.`
-  );
-});
-
 test("restore with no cache found", async () => {
   const path = "node_modules";
   const key = "node-test";
@@ -132,6 +90,10 @@ test("restore with no cache found", async () => {
   testUtils.setInputs({
     path: path,
     key,
+    "aws-access-key-id": "",
+    "aws-default-bucket": "",
+    "aws-default-region": "",
+    "aws-secret-access-key": "",
   });
 
   const infoMock = jest.spyOn(core, "info");
@@ -161,6 +123,10 @@ test("restore with server error should fail", async () => {
   testUtils.setInputs({
     path: path,
     key,
+    "aws-access-key-id": "",
+    "aws-default-bucket": "",
+    "aws-default-region": "",
+    "aws-secret-access-key": "",
   });
 
   const logWarningMock = jest.spyOn(actionUtils, "logWarning");
@@ -190,12 +156,14 @@ test("restore with server error should fail", async () => {
 test("restore with restore keys and no cache found", async () => {
   const path = "node_modules";
   const key = "node-test";
-  const restoreKey = "node-";
 
   testUtils.setInputs({
     path: path,
     key,
-    restoreKeys: [restoreKey],
+    "aws-access-key-id": "",
+    "aws-default-bucket": "",
+    "aws-default-region": "",
+    "aws-secret-access-key": "",
   });
 
   const infoMock = jest.spyOn(core, "info");
@@ -210,11 +178,11 @@ test("restore with restore keys and no cache found", async () => {
   await run();
 
   expect(restoreCacheMock).toHaveBeenCalledTimes(1);
-  expect(restoreCacheMock).toHaveBeenCalledWith([path], key, [restoreKey]);
+  expect(restoreCacheMock).toHaveBeenCalledWith([path], key, []);
   expect(stateMock).toHaveBeenCalledWith("CACHE_KEY", key);
   expect(failedMock).toHaveBeenCalledTimes(0);
   expect(infoMock).toHaveBeenCalledWith(
-    `Cache not found for input keys: ${key}, ${restoreKey}`
+    `Cache not found for input keys: ${key}`
   );
 });
 
@@ -224,6 +192,10 @@ test("restore with cache found for key", async () => {
   testUtils.setInputs({
     path: path,
     key,
+    "aws-access-key-id": "",
+    "aws-default-bucket": "",
+    "aws-default-region": "",
+    "aws-secret-access-key": "",
   });
 
   const infoMock = jest.spyOn(core, "info");
@@ -244,39 +216,5 @@ test("restore with cache found for key", async () => {
   expect(setCacheHitOutputMock).toHaveBeenCalledTimes(1);
   expect(setCacheHitOutputMock).toHaveBeenCalledWith(true);
   expect(infoMock).toHaveBeenCalledWith(`Cache restored from key: ${key}`);
-  expect(failedMock).toHaveBeenCalledTimes(0);
-});
-
-test("restore with cache found for restore key", async () => {
-  const path = "node_modules";
-  const key = "node-test";
-  const restoreKey = "node-";
-
-  testUtils.setInputs({
-    path: path,
-    key,
-    restoreKeys: [restoreKey],
-  });
-
-  const infoMock = jest.spyOn(core, "info");
-  const failedMock = jest.spyOn(core, "setFailed");
-  const stateMock = jest.spyOn(core, "saveState");
-  const setCacheHitOutputMock = jest.spyOn(actionUtils, "setCacheHitOutput");
-  const restoreCacheMock = jest
-    .spyOn(cache, "restoreCache")
-    .mockImplementationOnce(() => {
-      return Promise.resolve(restoreKey);
-    });
-
-  await run();
-
-  expect(restoreCacheMock).toHaveBeenCalledTimes(1);
-  expect(restoreCacheMock).toHaveBeenCalledWith([path], key, [restoreKey]);
-  expect(stateMock).toHaveBeenCalledWith("CACHE_KEY", key);
-  expect(setCacheHitOutputMock).toHaveBeenCalledTimes(1);
-  expect(setCacheHitOutputMock).toHaveBeenCalledWith(false);
-  expect(infoMock).toHaveBeenCalledWith(
-    `Cache restored from key: ${restoreKey}`
-  );
   expect(failedMock).toHaveBeenCalledTimes(0);
 });

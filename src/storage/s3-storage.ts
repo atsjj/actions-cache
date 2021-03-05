@@ -10,20 +10,16 @@ export interface Storage {
   download(key: string): Promise<Uint8Array>;
 }
 
-function getObject(
-  s3: S3,
-  bucket: string,
-  key: string
-): Promise<Uint8Array> {
+function getObject(s3: S3, bucket: string, key: string): Promise<Uint8Array> {
   return new Promise(function (resolve, reject) {
     s3.getObject({ Bucket: bucket, Key: key }, function (error, data) {
       if (error) {
         reject(error);
       } else {
         if (data.Body === undefined) {
-          reject('S3 returned `undefined` as an object');
+          reject("S3 returned `undefined` as an object");
         } else {
-          resolve(data.Body as unknown as Uint8Array);
+          resolve((data.Body as unknown) as Uint8Array);
         }
       }
     });
@@ -67,7 +63,13 @@ function getInput(env: string, ref: string): string {
   try {
     return core.getInput(ref, { required: true });
   } catch (_) {
-    return process.env[env] || "";
+    const value = process.env[env];
+
+    if (value === undefined) {
+      throw new Error(`Missing environment variable \`${env}\``);
+    }
+
+    return value;
   }
 }
 

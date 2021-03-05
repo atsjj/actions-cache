@@ -26,8 +26,7 @@ export async function createTar(
 
   await cmd(
     "a",
-    "-w",
-    workingDirectory.replace(PathRegexp, "/"),
+    "-spf",
     join(archiveFolder, cacheFileName).replace(PathRegexp, "/"),
     ...sourceDirectories
   );
@@ -41,12 +40,7 @@ export async function extractTar(
 
   await io.mkdirP(workingDirectory);
 
-  await cmd(
-    "x",
-    "-w",
-    workingDirectory.replace(PathRegexp, "/"),
-    archivePath.replace(PathRegexp, "/")
-  );
+  await cmd("x", archivePath.replace(PathRegexp, "/"));
 }
 
 export async function listTar(

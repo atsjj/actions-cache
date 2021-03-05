@@ -257,7 +257,6 @@ test("save with valid inputs uploads a cache", async () => {
   const inputPath = "node_modules";
 
   testUtils.setInput(Inputs.Path, inputPath);
-  testUtils.setInput(Inputs.UploadChunkSize, "4000000");
 
   const cacheId = primaryKey;
   const saveCacheMock = jest
@@ -270,7 +269,7 @@ test("save with valid inputs uploads a cache", async () => {
 
   expect(saveCacheMock).toHaveBeenCalledTimes(1);
   expect(saveCacheMock).toHaveBeenCalledWith([inputPath], primaryKey, {
-    uploadChunkSize: 4000000,
+    uploadChunkSize: undefined,
   });
   expect(failedMock).toHaveBeenCalledTimes(0);
 });

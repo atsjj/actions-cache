@@ -16,6 +16,7 @@ async function run(): Promise<void> {
     }
 
     const primaryKey = core.getInput(Inputs.Key, { required: true });
+
     core.saveState(State.CachePrimaryKey, primaryKey);
 
     const restoreKeys = utils.getInputAsArray(Inputs.RestoreKeys);
@@ -29,6 +30,7 @@ async function run(): Promise<void> {
         primaryKey,
         restoreKeys
       );
+
       if (!cacheKey) {
         core.info(
           `Cache not found for input keys: ${[primaryKey, ...restoreKeys].join(

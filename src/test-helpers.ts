@@ -2,7 +2,7 @@ import { Inputs } from "./constants";
 
 // See: https://github.com/actions/toolkit/blob/master/packages/core/src/core.ts#L67
 function getInputName(name: string): string {
-  return `INPUT_${name.replace(/ /g, "_").toUpperCase()}`;
+  return `INPUT_${name.replace(/[\s-]/g, "_").toUpperCase()}`;
 }
 
 export function setInput(name: string, value: string): void {
@@ -13,6 +13,10 @@ interface CacheInput {
   path: string;
   key: string;
   restoreKeys?: string[];
+  "aws-access-key-id"?: string;
+  "aws-default-bucket"?: string;
+  "aws-default-region"?: string;
+  "aws-secret-access-key"?: string;
 }
 
 export function setInputs(input: CacheInput): void {
