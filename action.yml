@@ -1,0 +1,37 @@
+name: 'Cache'
+description: 'Cache artifacts like dependencies and build outputs to improve workflow execution time'
+author: 'Steve Jabour'
+
+inputs:
+  path:
+    description: 'A list of files, directories, and wildcard patterns to cache and restore'
+    required: true
+  key:
+    description: 'An explicit key for restoring and saving the cache'
+    required: true
+  aws-access-key-id:
+    description: 'Specifies an AWS access key associated with an IAM user or role.'
+    required: false
+  aws-default-bucket:
+    description: 'Specifies the name of the bucket.'
+    required: false
+  aws-default-region:
+    description: 'Specifies the region for the associated bucket.'
+    required: false
+  aws-secret-access-key:
+    description: 'Specifies the secret key associated with the access key.'
+    required: false
+
+outputs:
+  cache-hit:
+    description: 'A boolean value to indicate an exact match was found for the primary key'
+
+runs:
+  using: 'node12'
+  main: 'dist/restore/index.js'
+  post: 'dist/save/index.js'
+  post-if: 'success()'
+
+branding:
+  icon: 'archive'
+  color: 'gray-dark'
